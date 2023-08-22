@@ -1,24 +1,37 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import "./App.css";
+import Cards, { Card } from "./components/Cards";
 
 function App() {
+  const [cards, setCards] = useState<Card[]>([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const handleFetchCards = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch("/fetchCards");
+        const json: Card[] = await response.json();
+        setCards(json);
+      } catch (_e) {
+        setError("Something went wrong");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    handleFetchCards();
+  }, []);
+
+  if (loading) return <p>Loading</p>;
+
+  if (error) return <p>{error}</p>;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <header></header>
+      <main>{<Cards cards={cards} />}</main>
     </div>
   );
 }
