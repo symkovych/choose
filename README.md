@@ -14,4 +14,3 @@
 
 ### `npm run test`
 
-I spent around 4 hours to this taks
